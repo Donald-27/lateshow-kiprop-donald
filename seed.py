@@ -2,7 +2,7 @@ from app import app, db
 from models import Episode, Guest, Appearance
 
 with app.app_context():
-    print("🌱 Seeding database...")
+    print("Seeding database...")
 
     db.drop_all()
     db.create_all()
