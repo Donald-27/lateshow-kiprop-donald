@@ -12,7 +12,6 @@ app.config.from_object('config.Config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# Import models after db is defined (we'll define these later in models.py)
 from models import Episode, Guest, Appearance
 
 @app.route('/')
