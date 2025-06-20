@@ -1,19 +1,36 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask import request, jsonify
+# GET episodes
+@app.route('/episodes', methods=['GET'])
+def get_episodes():
+    episodes = Episode.query.all()
+    return jsonify([e.to_dict() for e in episodes]), 200
 
-app = Flask(__name__)
-app.config.from_object('config.Config')
+# GET episodes id
+@app.route('/episodes/<int:id>', methods=['GET'])
+def get_episode_by_id(id):
+    episode = Episode.query.get(id)
+    if episode:
+        return jsonify(episode.to_dict_with_appearances()), 200
+    return jsonify({"error": "Episode not found"}), 404
 
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+# GET guests
+@app.route('/guests', methods=['GET'])
+def get_guests():
+    guests = Guest.query.all()
+    return jsonify([g.to_dict() for g in guests]), 200
 
-from models import Episode, Guest, Appearance
-
-@app.route('/')
-def index():
-    return {
-        "message": "Welcome to the Late Show API!"
-    }
-if __name__ == '__main__':
-    app.run(debug=True)
+# POST appearances
+@app.route('/appearances', methods=['POST'])
+def create_appearance():
+    data = request.get_json()
+    try:
+        appearance = Appearance(
+            rating=data['rating'],
+            guest_id=data['guest_id'],
+            episode_id=data['episode_id']
+        )
+        db.session.add(appearance)
+        db.session.commit()
+        return jsonify(appearance.to_dict()), 201
+    except Exception as e:
+        return jsonify({"errors": [str(e)]}), 400
