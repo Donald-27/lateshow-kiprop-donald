@@ -11,12 +11,21 @@ class Episode(db.Model):
 
     appearances = db.relationship('Appearance', backref='episode', cascade='all, delete-orphan')
 
+    # Used for GET /episodes
     def to_dict(self):
         return {
             "id": self.id,
             "date": self.date,
+            "number": self.number
+        }
+
+    # Used for GET /episodes/:id
+    def to_dict_with_appearances(self):
+        return {
+            "id": self.id,
+            "date": self.date,
             "number": self.number,
-            "appearances": [appearance.to_dict() for appearance in self.appearances]
+            "appearances": [appearance.to_dict_basic() for appearance in self.appearances]
         }
 
 
@@ -46,6 +55,7 @@ class Appearance(db.Model):
     guest_id = db.Column(db.Integer, db.ForeignKey('guests.id'), nullable=False)
     episode_id = db.Column(db.Integer, db.ForeignKey('episodes.id'), nullable=False)
 
+    # Used for POST /appearances
     def to_dict(self):
         return {
             "id": self.id,
@@ -58,4 +68,14 @@ class Appearance(db.Model):
                 "date": self.episode.date,
                 "number": self.episode.number
             }
+        }
+
+    # Used in nested appearance lists (e.g. inside episode)
+    def to_dict_basic(self):
+        return {
+            "id": self.id,
+            "rating": self.rating,
+            "guest_id": self.guest_id,
+            "episode_id": self.episode_id,
+            "guest": self.guest.to_dict()
         }
