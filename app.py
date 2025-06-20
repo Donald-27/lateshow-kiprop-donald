@@ -14,6 +14,5 @@ def index():
     return {
         "message": "Welcome to the Late Show API!"
     }
-
 if __name__ == '__main__':
     app.run(debug=True)
