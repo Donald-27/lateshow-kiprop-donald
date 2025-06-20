@@ -1,7 +1,5 @@
-
-
-from app import db
-
+from extensions import db
+from sqlalchemy.orm import validates
 class Episode(db.Model):
     __tablename__ = 'episodes'
     id = db.Column(db.Integer, primary_key=True)
