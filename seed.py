@@ -1,32 +1,22 @@
-from flask import request, jsonify
+from app import app, db
+from models import Episode, Guest, Appearance
 
-@app.route('/episodes', methods=['GET'])
-def get_episodes():
-    episodes = Episode.query.all()
-    return jsonify([e.to_dict() for e in episodes]), 200
+with app.app_context():
+    print("🌱 Seeding database...")
 
-@app.route('/episodes/<int:id>', methods=['GET'])
-def get_episode_by_id(id):
-    episode = Episode.query.get(id)
-    if episode:
-        return jsonify(episode.to_dict_with_appearances()), 200
-    return jsonify({"error": "Episode not found"}), 404
+    db.drop_all()
+    db.create_all()
 
-@app.route('/guests', methods=['GET'])
-def get_guests():
-    guests = Guest.query.all()
-    return jsonify([g.to_dict() for g in guests]), 200
-@app.route('/appearances', methods=['POST'])
-def create_appearance():
-    data = request.get_json()
-    try:
-        appearance = Appearance(
-            rating=data['rating'],
-            guest_id=data['guest_id'],
-            episode_id=data['episode_id']
-        )
-        db.session.add(appearance)
-        db.session.commit()
-        return jsonify(appearance.to_dict()), 201
-    except Exception as e:
-        return jsonify({"errors": [str(e)]}), 400
+    ep1 = Episode(date="1/11/99", number=1)
+    ep2 = Episode(date="1/12/99", number=2)
+
+    g1 = Guest(name="Michael J. Fox", occupation="actor")
+    g2 = Guest(name="Sandra Bernhard", occupation="Comedian")
+    g3 = Guest(name="Tracey Ullman", occupation="television actress")
+
+    a1 = Appearance(rating=4, guest=g1, episode=ep1)
+    a2 = Appearance(rating=5, guest=g3, episode=ep2)
+    db.session.add_all([ep1, ep2, g1, g2, g3, a1, a2])
+    db.session.commit()
+
+    print("Done seeding!")
