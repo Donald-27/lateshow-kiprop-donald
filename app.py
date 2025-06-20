@@ -1,15 +1,15 @@
-# app.py - Main Flask app for Late Show API
-
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from extensions import db, migrate
+from models import Episode, Guest, Appearance 
 
 app = Flask(__name__)
 app.config.from_object('config.Config')
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-from models import Episode, Guest, Appearance
 
+# Initialize extensions
+db.init_app(app)
+migrate.init_app(app, db)
+
+# Root route
 @app.route('/')
 def home():
     return {"message": "Welcome to the Late Show API!"}
