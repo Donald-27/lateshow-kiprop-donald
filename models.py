@@ -45,7 +45,6 @@ class Guest(db.Model):
             "occupation": self.occupation
         }
 
-
 class Appearance(db.Model):
     __tablename__ = 'appearances'
 
@@ -55,7 +54,7 @@ class Appearance(db.Model):
     guest_id = db.Column(db.Integer, db.ForeignKey('guests.id'), nullable=False)
     episode_id = db.Column(db.Integer, db.ForeignKey('episodes.id'), nullable=False)
 
-    # Used for POST /appearances
+    # POST appearances
     def to_dict(self):
         return {
             "id": self.id,
