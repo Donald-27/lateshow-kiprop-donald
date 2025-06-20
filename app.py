@@ -9,6 +9,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from models import Episode, Guest, Appearance
+
 @app.route('/')
 def index():
     return {
