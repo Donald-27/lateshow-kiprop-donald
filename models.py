@@ -1,4 +1,4 @@
-# models.py - Contains database models for Episode, Guest, and Appearance
+
 
 from app import db
 
@@ -11,7 +11,7 @@ class Episode(db.Model):
 
     appearances = db.relationship('Appearance', backref='episode', cascade='all, delete-orphan')
 
-    # Used for GET /episodes
+    # GET episodes
     def to_dict(self):
         return {
             "id": self.id,
@@ -19,7 +19,7 @@ class Episode(db.Model):
             "number": self.number
         }
 
-    # Used for GET /episodes/:id
+    # GET episodes id
     def to_dict_with_appearances(self):
         return {
             "id": self.id,
