@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from extensions import db, migrate
+from flask_cors import CORS 
 from models import Episode, Guest, Appearance 
 app = Flask(__name__)
 app.config.from_object('config.Config')
